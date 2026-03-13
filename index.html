@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Belajar Waktu ⏰</title>
+    <title>Belajar Waktu ⏰ - Profesional</title>
     <style>
         body {
             margin: 0;
@@ -18,7 +18,7 @@
             color: #333;
         }
 
-        /* ----- AREA LANGIT & PEMANDANGAN (Gaya Kartun Lucu) ----- */
+        /* ----- AREA LANGIT & PEMANDANGAN (Desain Profesional) ----- */
         .scene {
             position: relative;
             width: 100%;
@@ -32,7 +32,7 @@
         .sky-layer {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            transition: opacity 0.1s;
+            transition: opacity 0.3s ease; /* Transisi halus */
             pointer-events: none;
         }
         #sunset-sky {
@@ -104,14 +104,13 @@
 
         .sun, .moon {
             position: absolute;
-            font-size: 100px;
+            width: 100px; height: 100px;
             left: -50px;
             top: -380px;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            /* text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); */
         }
-        .moon { color: #f9d71c; }
 
-        /* Pemandangan Bukit Kartun di depan */
+        /* Lanskap Pemandangan Kustom */
         .landscape {
             position: absolute;
             bottom: -60px;
@@ -134,17 +133,17 @@
             z-index: 3;
         }
 
-        /* ----- ELEMEN PEMANDANGAN BARU ----- */
+        /* Elemen Pemandangan Baru */
         .scene-item {
             position: absolute;
             z-index: 4;
             pointer-events: none;
-            font-size: 80px;
+            width: 80px; height: 80px;
         }
-        .house { bottom: 70px; left: 15%; font-size: 100px; }
-        .tree-1 { bottom: 100px; left: 40%; font-size: 110px; }
-        .tree-2 { bottom: 90px; right: 20%; font-size: 100px; }
-        .cat { bottom: 70px; left: 60%; font-size: 50px; animation: wagTail 2s infinite ease-in-out; }
+        .house { bottom: 110px; left: 15%; width: 100px; height: 100px; }
+        .tree-1 { bottom: 100px; left: 40%; width: 110px; height: 110px; }
+        .tree-2 { bottom: 90px; right: 20%; width: 100px; height: 100px; }
+        .cat { bottom: 70px; left: 60%; width: 50px; height: 50px; animation: wagTail 2s infinite ease-in-out; }
 
         @keyframes wagTail {
             0%, 100% { transform: rotate(-5deg); }
@@ -162,7 +161,7 @@
         }
         .bird {
             position: absolute;
-            font-size: 24px;
+            width: 24px; height: 24px;
             animation: flyBirds 12s linear infinite;
         }
         .bird-1 { left: 10%; top: 10px; animation-duration: 12s; }
@@ -255,6 +254,7 @@
             height: 75px;
             background: #e74c3c;
             margin-left: -5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Efek bayangan jarum */
         }
 
         .minute-hand {
@@ -262,6 +262,7 @@
             height: 110px;
             background: #3498db;
             margin-left: -3.5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         
         .instruction {
@@ -330,7 +331,7 @@
             <div class="center-dot"></div>
         </div>
         
-        <div class="instruction">Putar jamnya dengan jarimu! 👆🐔🦗🐈</div>
+        <div class="instruction">Putar jamnya dengan jarimu! 👆🐔🦗🐈🐕🚶</div>
     </div>
 
     <audio id="rooster-sound" preload="auto">
