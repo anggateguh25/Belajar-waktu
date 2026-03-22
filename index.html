@@ -5,30 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Belajar Waktu ⏰</title>
     <style>
-        body {
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
             margin: 0;
             padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
             font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif;
             background-color: #f7f9fc;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            overflow: hidden;
+            min-height: 100dvh;
             color: #333;
         }
 
-        /* ----- AREA LANGIT & PEMANDANGAN (Gaya Kartun Lucu) ----- */
+        /* ----- AREA LANGIT & PEMANDANGAN ----- */
         .scene {
             position: relative;
             width: 100%;
-            height: 48vh;
-            max-height: 450px;
+            flex: 0 0 auto;
+            height: 45vh;
+            height: 45dvh;
+            max-height: 420px;
+            min-height: 200px;
             overflow: hidden;
-            background: #aad5eb; /* Langit siang yang cerah */
+            background: #aad5eb;
         }
 
-        /* Lapisan untuk efek senja/pagi */
         .sky-layer {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -44,7 +56,6 @@
             opacity: 0;
         }
 
-        /* Bintang-bintang sederhana di malam hari */
         .stars {
             position: absolute;
             width: 100%; height: 100%;
@@ -53,10 +64,10 @@
             opacity: 0.6;
         }
 
-        /* Awan bergerak */
+        /* Awan */
         .clouds {
             position: absolute;
-            top: 20px;
+            top: 15px;
             width: 100%;
             height: 100px;
             opacity: 0.8;
@@ -75,24 +86,24 @@
             border-radius: 100px;
         }
         .cloud-1 {
-            width: 100px; height: 40px; top: 10px; left: 20%;
+            width: 80px; height: 32px; top: 10px; left: 20%;
             animation-duration: 25s;
         }
-        .cloud-1::before { width: 50px; height: 50px; top: -25px; left: 10px; }
-        .cloud-1::after { width: 40px; height: 40px; top: -15px; left: 50px; }
+        .cloud-1::before { width: 40px; height: 40px; top: -20px; left: 8px; }
+        .cloud-1::after  { width: 32px; height: 32px; top: -12px; left: 40px; }
         .cloud-2 {
-            width: 120px; height: 50px; top: 40px; left: 60%;
+            width: 100px; height: 40px; top: 40px; left: 60%;
             animation-duration: 30s; animation-delay: -5s;
         }
-        .cloud-2::before { width: 60px; height: 60px; top: -30px; left: 15px; }
-        .cloud-2::after { width: 50px; height: 50px; top: -20px; left: 55px; }
+        .cloud-2::before { width: 50px; height: 50px; top: -25px; left: 12px; }
+        .cloud-2::after  { width: 40px; height: 40px; top: -16px; left: 45px; }
 
         @keyframes moveClouds {
             from { left: 100%; }
-            to { left: -150px; }
+            to   { left: -150px; }
         }
 
-        /* Poros Matahari & Bulan */
+        /* Poros Matahari & Bulan — ukuran pivot dan posisi emoji ikut layar */
         .celestial-pivot {
             position: absolute;
             bottom: -50px;
@@ -104,54 +115,56 @@
 
         .sun, .moon {
             position: absolute;
-            font-size: 100px;
-            left: -50px;
-            top: -380px;
+            /* font-size responsif: 10% dari lebar viewport, min 50px max 100px */
+            font-size: clamp(50px, 10vw, 100px);
+            /* posisi relatif terhadap ukuran font agar tetap di busur */
+            left: -0.5em;
+            top: calc(-3.8em - 100px);
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
         .moon { color: #f9d71c; }
 
-        /* Pemandangan Bukit Kartun di depan */
+        /* Pemandangan bukit */
         .landscape {
             position: absolute;
             bottom: -60px;
             left: -15%;
             width: 130%;
-            height: 180px;
+            height: 160px;
             background: #27ae60;
             border-radius: 50% 50% 0 0;
             z-index: 2;
-            border-top: 6px solid #1f8b4d;
+            border-top: 5px solid #1f8b4d;
         }
         .landscape-2 {
             position: absolute;
             bottom: -40px;
             right: -25%;
             width: 90%;
-            height: 140px;
+            height: 130px;
             background: #1f8b4d;
             border-radius: 50% 50% 0 0;
             z-index: 3;
         }
 
-        /* ----- ELEMEN PEMANDANGAN BARU ----- */
+        /* Elemen pemandangan — bottom diset oleh JS agar selalu nempel bukit */
         .scene-item {
             position: absolute;
             z-index: 4;
             pointer-events: none;
-            font-size: 80px;
         }
-        .house { bottom: 70px; left: 15%; font-size: 100px; }
-        .tree-1 { bottom: 100px; left: 40%; font-size: 110px; }
-        .tree-2 { bottom: 90px; right: 20%; font-size: 100px; }
-        .cat { bottom: 70px; left: 60%; font-size: 50px; animation: wagTail 2s infinite ease-in-out; }
+        .house  { left: 15%;  font-size: clamp(50px, 12vw, 100px); }
+        .tree-1 { left: 40%;  font-size: clamp(55px, 13vw, 110px); }
+        .tree-2 { right: 20%; font-size: clamp(50px, 12vw, 100px); }
+        .cat    { left: 60%;  font-size: clamp(28px, 6vw, 50px);
+                  animation: wagTail 2s infinite ease-in-out; }
 
         @keyframes wagTail {
             0%, 100% { transform: rotate(-5deg); }
-            50% { transform: rotate(5deg); }
+            50%       { transform: rotate(5deg);  }
         }
 
-        /* Burung terbang (Diperbarui agar maju ke kanan) */
+        /* Burung */
         .birds {
             position: absolute;
             top: 80px;
@@ -162,16 +175,16 @@
         }
         .bird {
             position: absolute;
-            font-size: 24px;
+            heigh: clamp(16px, 4vw, 24px);
             animation: flyBirds 12s linear infinite;
         }
-        .bird-1 { left: 10%; top: 10px; animation-duration: 12s; }
+        .bird-1 { left: 10%; top: 10px;  animation-duration: 12s; }
         .bird-2 { left: 30%; top: -20px; animation-duration: 15s; animation-delay: 2s; }
-        .bird-3 { left: 15%; top: 40px; animation-duration: 10s; animation-delay: 1s; }
+        .bird-3 { left: 15%; top: 40px;  animation-duration: 10s; animation-delay: 1s; }
 
         @keyframes flyBirds {
-            0% { transform: translateX(-100%) scaleX(1); }
-            100% { transform: translateX(110vw) scaleX(1); }
+            0%   { transform: translateX(-100%) scaleX(1); }
+            100% { transform: translateX(110vw)  scaleX(1); }
         }
 
         /* ----- AREA JAM INTERAKTIF ----- */
@@ -185,38 +198,45 @@
             z-index: 10;
             background: rgba(255,255,255,0.7);
             border-radius: 30px 30px 0 0;
-            padding: 20px;
+            /* padding responsif */
+            padding: clamp(8px, 2vh, 20px) clamp(8px, 3vw, 20px);
             box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
+            overflow: hidden;
+            gap: clamp(6px, 1.5vh, 14px);
         }
 
+        /* Jam digital */
         .digital-clock {
-            font-size: 2.8rem;
+            font-size: clamp(1.4rem, 6vw, 2.8rem);
             font-weight: bold;
             color: #333;
             background: white;
-            padding: 15px 35px;
+            padding: clamp(8px, 2vw, 15px) clamp(16px, 5vw, 35px);
             border-radius: 25px;
-            border: 6px solid #ffd700;
-            margin-bottom: 25px;
+            border: clamp(3px, 1vw, 6px) solid #ffd700;
             box-shadow: 0 8px 18px rgba(0,0,0,0.1);
             text-align: center;
+            white-space: nowrap;
         }
 
+        /* Jam analog — ukuran pakai vmin agar proporsional di portrait & landscape */
         .clock {
             position: relative;
-            width: 270px;
-            height: 270px;
+            /* clamp: min 180px, ideal 50vmin, max 270px */
+            width:  clamp(180px, 50vmin, 270px);
+            height: clamp(180px, 50vmin, 270px);
             background: white;
             border-radius: 50%;
-            border: 14px solid #f39c12;
+            border: clamp(8px, 2vmin, 14px) solid #f39c12;
             box-shadow: 0 12px 25px rgba(0,0,0,0.2);
             touch-action: none;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
         .number {
             position: absolute;
-            font-size: 24px;
+            font-size: clamp(14px, 4vmin, 24px);
             font-weight: bold;
             color: #333;
             width: 100%;
@@ -227,18 +247,19 @@
         }
         .number span {
             display: inline-block;
-            margin-top: 15px;
+            margin-top: clamp(8px, 2vmin, 15px);
         }
 
         .center-dot {
             position: absolute;
             top: 50%; left: 50%;
-            width: 22px; height: 22px;
+            width:  clamp(14px, 3.5vmin, 22px);
+            height: clamp(14px, 3.5vmin, 22px);
             background: #2c3e50;
             border-radius: 50%;
             transform: translate(-50%, -50%);
             z-index: 5;
-            border: 4px solid #ffd700;
+            border: clamp(2px, 0.8vmin, 4px) solid #ffd700;
         }
 
         .hand {
@@ -251,26 +272,25 @@
         }
 
         .hour-hand {
-            width: 10px;
-            height: 75px;
+            width:  clamp(6px,  1.5vmin, 10px);
+            height: clamp(45px, 14vmin, 75px);
             background: #e74c3c;
-            margin-left: -5px;
+            margin-left: clamp(-3px, -0.75vmin, -5px);
         }
 
         .minute-hand {
-            width: 7px;
-            height: 110px;
+            width:  clamp(4px,  1vmin, 7px);
+            height: clamp(65px, 20vmin, 110px);
             background: #3498db;
-            margin-left: -3.5px;
-        }
-        
-        .instruction {
-            margin-top: 20px;
-            font-size: 1.3rem;
-            color: #555;
-            text-align: center;
+            margin-left: clamp(-2px, -0.5vmin, -3.5px);
         }
 
+        .instruction {
+            font-size: clamp(0.85rem, 3.5vw, 1.3rem);
+            color: #555;
+            text-align: center;
+            padding: 0 8px;
+        }
     </style>
 </head>
 <body>
@@ -280,16 +300,16 @@
         <div id="night-sky" class="sky-layer">
             <div class="stars"></div>
         </div>
-        
+
         <div class="clouds">
             <div class="cloud cloud-1"></div>
             <div class="cloud cloud-2"></div>
         </div>
 
         <div class="birds" id="birds">
-            <div class="bird bird-1">🐦</div>
-            <div class="bird bird-2">🐦</div>
-            <div class="bird bird-3">🐦</div>
+            <img class="bird bird-1" src="flybird.png" style="height:35px;">
+            <img class="bird bird-2" src="flybird.png" style="height:35px;">
+            <img class="bird bird-3" src="flybird.png" style="height:35px;">
         </div>
 
         <div class="celestial-pivot" id="sun-pivot">
@@ -310,7 +330,7 @@
 
     <div class="controls">
         <div class="digital-clock" id="digital-clock">12:00 Siang</div>
-        
+
         <div class="clock" id="clock">
             <div class="number" style="transform: rotate(30deg)"><span style="transform: rotate(-30deg)">1</span></div>
             <div class="number" style="transform: rotate(60deg)"><span style="transform: rotate(-60deg)">2</span></div>
@@ -329,7 +349,7 @@
             <div class="hand minute-hand" id="minute-hand"></div>
             <div class="center-dot"></div>
         </div>
-        
+
         <div class="instruction">Putar jamnya dengan jarimu! 👆🐔🦗🐈</div>
     </div>
 
@@ -345,36 +365,31 @@
         const hourHand = document.getElementById('hour-hand');
         const minuteHand = document.getElementById('minute-hand');
         const digitalClock = document.getElementById('digital-clock');
-        
+
         const sunPivot = document.getElementById('sun-pivot');
         const moonPivot = document.getElementById('moon-pivot');
         const sunsetSky = document.getElementById('sunset-sky');
         const nightSky = document.getElementById('night-sky');
         const birds = document.getElementById('birds');
-        
+
         const roosterAudio = document.getElementById('rooster-sound');
         const cricketAudio = document.getElementById('cricket-sound');
 
-        // Mulai di jam 12:00 Siang
-        // 360 derajat = 1 putaran = 12 jam.
-        let totalAngle = 360; 
+        let totalAngle = 360;
         let lastAngle = 0;
         let isDragging = false;
-        
+
         let playedRooster = false;
-        let currentCricketState = false; // false = off, true = on
+        let currentCricketState = false;
 
         function updateTime(e) {
-            // Ambil posisi sentuhan jari atau klik mouse
             let clientX = e.touches ? e.touches[0].clientX : e.clientX;
             let clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-            // Cari titik tengah jam
             let rect = clock.getBoundingClientRect();
             let cx = rect.left + rect.width / 2;
             let cy = rect.top + rect.height / 2;
 
-            // Hitung sudut (angle) dari titik tengah ke posisi jari
             let angle = Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI) + 90;
             if (angle < 0) angle += 360;
 
@@ -382,34 +397,53 @@
                 lastAngle = angle;
             }
 
-            // Hitung perbedaan sudut untuk perputaran tanpa batas
             let delta = angle - lastAngle;
             if (delta > 180) delta -= 360;
             if (delta < -180) delta += 360;
 
             totalAngle += delta;
-            
-            // Mencegah angka negatif jauh (mereset ke putaran positif)
-            if (totalAngle < 0) totalAngle += 720; 
-            
+            if (totalAngle < 0) totalAngle += 720;
+
             lastAngle = angle;
-            applyTime();
+            // Posisikan scene-item tepat di atas puncak bukit secara real-time
+        function positionItems() {
+            const scene     = document.querySelector(".scene");
+            const landscape = document.querySelector(".landscape");
+            const sceneRect = scene.getBoundingClientRect();
+            const hillRect  = landscape.getBoundingClientRect();
+
+            // Jarak puncak bukit dari bawah scene
+            const hillPeakFromBottom = (sceneRect.bottom - hillRect.top) - 70;
+
+            const items = [
+                { sel: ".house",  extra: 0   },
+                { sel: ".tree-1", extra: 0   },
+                { sel: ".tree-2", extra: 0   },
+                { sel: ".cat",    extra: -12 },
+            ];
+            items.forEach(function({ sel, extra }) {
+                const el = document.querySelector(sel);
+                if (!el) return;
+                el.style.top    = "auto";
+                el.style.bottom = (hillPeakFromBottom + extra) + "px";
+            });
+        }
+
+        positionItems();
+        applyTime();
+        window.addEventListener("resize", positionItems);
         }
 
         function applyTime() {
-            // 30 derajat jarum pendek = 1 Jam
             let totalHours = totalAngle / 30;
-            
-            // Ambil format 24 jam (0 - 23.99)
             let time24 = totalHours % 24;
-            
+
             let hours = Math.floor(time24);
             let minutes = Math.floor((time24 - hours) * 60);
 
-            // --- 1. UPDATE JAM DIGITAL ---
-            let displayHour = hours % 12 || 12; // Ubah 0 jadi 12
+            let displayHour = hours % 12 || 12;
             let displayMin = minutes.toString().padStart(2, '0');
-            
+
             let period = "";
             if (hours >= 4 && hours < 10) period = "Pagi";
             else if (hours >= 10 && hours < 15) period = "Siang";
@@ -418,54 +452,41 @@
 
             digitalClock.innerText = `${displayHour}:${displayMin} ${period}`;
 
-            // --- 2. UPDATE JARUM JAM ---
             hourHand.style.transform = `rotate(${totalAngle}deg)`;
-            minuteHand.style.transform = `rotate(${minutes * 6}deg)`; // 6 derajat per menit
+            minuteHand.style.transform = `rotate(${minutes * 6}deg)`;
 
-            // --- 3. UPDATE MATAHARI & BULAN ---
-            // Menggunakan rotasi di atas poros di luar layar untuk membuat busur besar
-            // Matahari: Terbit jam 6 pagi (-90deg), puncaknya jam 12 siang (0deg), terbenam jam 6 sore (90deg)
             let sunAngle = (time24 - 12) * 15;
             sunPivot.style.transform = `rotate(${sunAngle}deg)`;
 
-            // Bulan: Selalu berkebalikan 180 derajat dari matahari
             let moonAngle = sunAngle + 180;
             moonPivot.style.transform = `rotate(${moonAngle}deg)`;
 
-            // --- 4. UPDATE WARNA LANGIT & BINTANG ---
-            // Menghitung opasitas Malam
             if (time24 >= 6 && time24 <= 18) {
-                // Waktu siang hari
                 if (time24 < 7) {
-                    nightSky.style.opacity = 1 - (time24 - 6); // Pudar dari jam 6-7
+                    nightSky.style.opacity = 1 - (time24 - 6);
                 } else if (time24 > 17) {
-                    nightSky.style.opacity = time24 - 17; // Muncul dari jam 17-18
+                    nightSky.style.opacity = time24 - 17;
                 } else {
-                    nightSky.style.opacity = 0; // Siang bolong
+                    nightSky.style.opacity = 0;
                 }
             } else {
-                nightSky.style.opacity = 1; // Malam hari gelap gulita
+                nightSky.style.opacity = 1;
             }
 
-            // Menghitung opasitas Senja/Fajar (warna orange)
-            // Puncak orange di jam 6 pagi dan jam 18 (6 sore)
             let dawnDist = Math.abs(time24 - 6);
             let duskDist = Math.abs(time24 - 18);
-            
+
             let sunsetOpacity = 0;
             if (dawnDist < 1.5) sunsetOpacity = 1 - (dawnDist / 1.5);
             if (duskDist < 1.5) sunsetOpacity = 1 - (duskDist / 1.5);
             sunsetSky.style.opacity = sunsetOpacity;
 
-            // --- 5. BURUNG TERBANG (Pagi Hari 6-10 AM, Maju ke Kanan) ---
             if (hours >= 6 && hours < 10) {
                 birds.style.display = 'block';
             } else {
                 birds.style.display = 'none';
             }
 
-            // --- 6. SOUND LOGIC (Ayam & Jangkrik) ---
-            // Ayam Jago berkokok sekali pada jam 6 pagi
             if (hours === 6) {
                 if (!playedRooster) {
                     roosterAudio.play();
@@ -474,10 +495,9 @@
             } else {
                 playedRooster = false;
                 roosterAudio.pause();
-                roosterAudio.currentTime = 0; // Reset ke awal
+                roosterAudio.currentTime = 0;
             }
 
-            // Jangkrik mengerik di malam hari (e.g., 6 sore ke 6 pagi)
             let isNightForCrickets = (time24 < 6 || time24 > 18);
             if (isNightForCrickets) {
                 if (!currentCricketState) {
@@ -492,11 +512,10 @@
             }
         }
 
-        // --- EVENT LISTENERS UNTUK DRAG ---
         function startDrag(e) {
             isDragging = true;
             updateTime(e);
-            e.preventDefault(); // Mencegah scroll layar
+            e.preventDefault();
         }
 
         function doDrag(e) {
@@ -507,18 +526,41 @@
             isDragging = false;
         }
 
-        // Mouse Events (Untuk Komputer)
         clock.addEventListener('mousedown', startDrag);
         document.addEventListener('mousemove', doDrag);
         document.addEventListener('mouseup', stopDrag);
 
-        // Touch Events (Untuk HP / Tablet)
         clock.addEventListener('touchstart', startDrag, {passive: false});
         document.addEventListener('touchmove', doDrag, {passive: false});
         document.addEventListener('touchend', stopDrag);
 
-        // Inisialisasi posisi awal
+        // Posisikan scene-item tepat di atas puncak bukit secara real-time
+        function positionItems() {
+            const scene     = document.querySelector(".scene");
+            const landscape = document.querySelector(".landscape");
+            const sceneRect = scene.getBoundingClientRect();
+            const hillRect  = landscape.getBoundingClientRect();
+
+            // Jarak puncak bukit dari bawah scene
+            const hillPeakFromBottom = (sceneRect.bottom - hillRect.top) - 70;
+
+            const items = [
+                { sel: ".house",  extra: 0   },
+                { sel: ".tree-1", extra: 0   },
+                { sel: ".tree-2", extra: 0   },
+                { sel: ".cat",    extra: -12 },
+            ];
+            items.forEach(function({ sel, extra }) {
+                const el = document.querySelector(sel);
+                if (!el) return;
+                el.style.top    = "auto";
+                el.style.bottom = (hillPeakFromBottom + extra) + "px";
+            });
+        }
+
+        positionItems();
         applyTime();
+        window.addEventListener("resize", positionItems);
     </script>
 </body>
 </html>
